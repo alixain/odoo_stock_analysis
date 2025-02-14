@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="stock_analysis_report_template">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <div class="page">
+                    <h2>Stock Analysis Report</h2>
+                    <div class="row mb-4">
+                        <div class="col-6">
+                            <strong>Period:</strong>
+                            <span t-esc="start_date" t-options='{"widget": "date"}'/>
+                            to
+                            <span t-esc="end_date" t-options='{"widget": "date"}'/>
+                        </div>
+                    </div>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th class="text-right">Starting Balance</th>
+                                <th class="text-right">In</th>
+                                <th class="text-right">Out</th>
+                                <th class="text-right">Ending Balance</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="report_data" t-as="line">
+                                <td>
+                                    <span t-esc="line['product'].name"/>
+                                    <br/>
+                                    <small t-esc="line['product'].default_code"/>
+                                </td>
+                                <td class="text-right">
+                                    <span t-esc="'%.2f'% line['start_balance']"/>
+                                    <span t-esc="line['product'].uom_id.name"/>
+                                </td>
+                                <td class="text-right">
+                                    <span t-esc="'%.2f'% line['in_qty']"/>
+                                    <span t-esc="line['product'].uom_id.name"/>
+                                </td>
+                                <td class="text-right">
+                                    <span t-esc="'%.2f'% line['out_qty']"/>
+                                    <span t-esc="line['product'].uom_id.name"/>
+                                </td>
+                                <td class="text-right">
+                                    <span t-esc="'%.2f'% line['end_balance']"/>
+                                    <span t-esc="line['product'].uom_id.name"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>
