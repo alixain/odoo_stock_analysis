@@ -9,9 +9,9 @@
         * Incoming movements
         * Outgoing movements
         * Ending balance
-        * Filter by date range and products
+        * Filter by date range, products and product tags
     """,
-    'depends': ['base', 'stock'],
+    'depends': ['base', 'stock', 'product_tags'],
     'data': [
         'security/ir.model.access.csv',
         'wizard/stock_analysis_wizard_view.xml',

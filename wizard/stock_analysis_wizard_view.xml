@@ -6,9 +6,26 @@
         <field name="arch" type="xml">
             <form string="Stock Analysis Report">
                 <group>
-                    <field name="start_date"/>
-                    <field name="end_date"/>
-                    <field name="product_ids" widget="many2many_tags"/>
+                    <group>
+                        <field name="start_date"/>
+                        <field name="end_date"/>
+                    </group>
+                    <group>
+                        <field name="filter_by_tags"/>
+                    </group>
+                </group>
+                <notebook attrs="{'invisible': [('filter_by_tags', '=', False)]}">
+                    <page string="Tag Filters">
+                        <group>
+                            <field name="include_tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"
+                                   placeholder="Select tags to include"/>
+                            <field name="exclude_tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"
+                                   placeholder="Select tags to exclude"/>
+                        </group>
+                    </page>
+                </notebook>
+                <group>
+                    <field name="product_ids" widget="many2many_tags" attrs="{'invisible': [('filter_by_tags', '=', True)]}"/>
                 </group>
                 <footer>
                     <button name="action_print_report" string="Print Report" type="object" class="btn-primary"/>

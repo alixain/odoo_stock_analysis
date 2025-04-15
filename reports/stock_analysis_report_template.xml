@@ -12,39 +12,70 @@
                             to
                             <span t-esc="end_date" t-options='{"widget": "date"}'/>
                         </div>
+                        <div class="col-6" t-if="data['filter_by_tags']">
+                            <t t-if="include_tags">
+                                <strong>Included Tags:</strong>
+                                <t t-foreach="include_tags" t-as="tag">
+                                    <span class="badge" t-attf-style="background-color: #{tag.color or '#FFFFFF'}; color: #000000;">
+                                        <t t-esc="tag.name"/>
+                                    </span>
+                                </t>
+                            </t>
+                            <br t-if="include_tags and exclude_tags"/>
+                            <t t-if="exclude_tags">
+                                <strong>Excluded Tags:</strong>
+                                <t t-foreach="exclude_tags" t-as="tag">
+                                    <span class="badge" t-attf-style="background-color: #{tag.color or '#FFFFFF'}; color: #000000;">
+                                        <t t-esc="tag.name"/>
+                                    </span>
+                                </t>
+                            </t>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-12">
+                            <strong>Legend: </strong>
+                            <span class="fw-bold">⚠</span> = Below minimum stock level
+                        </div>
                     </div>
                     <table class="table table-bordered">
                         <thead>
                             <tr>
                                 <th>Product</th>
-                                <th class="text-right">Starting Balance</th>
-                                <th class="text-right">In</th>
-                                <th class="text-right">Out</th>
-                                <th class="text-right">Ending Balance</th>
+                                <th class="text-end">Starting Balance</th>
+                                <th class="text-end">In</th>
+                                <th class="text-end">Out</th>
+                                <th class="text-end">Ending Balance</th>
+                                <th>Status</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr t-foreach="report_data" t-as="line">
+                            <tr t-foreach="report_data" t-as="line" t-attf-class="{{ 'fw-bold' if line['is_below_min'] else '' }}">
                                 <td>
                                     <span t-esc="line['product'].name"/>
                                     <br/>
                                     <small t-esc="line['product'].default_code"/>
                                 </td>
-                                <td class="text-right">
+                               
+                                <td class="text-end">
                                     <span t-esc="'%.2f'% line['start_balance']"/>
                                     <span t-esc="line['product'].uom_id.name"/>
                                 </td>
-                                <td class="text-right">
+                                <td class="text-end">
                                     <span t-esc="'%.2f'% line['in_qty']"/>
                                     <span t-esc="line['product'].uom_id.name"/>
                                 </td>
-                                <td class="text-right">
+                                <td class="text-end">
                                     <span t-esc="'%.2f'% line['out_qty']"/>
                                     <span t-esc="line['product'].uom_id.name"/>
                                 </td>
-                                <td class="text-right">
+                                <td class="text-end">
                                     <span t-esc="'%.2f'% line['end_balance']"/>
                                     <span t-esc="line['product'].uom_id.name"/>
+                                </td>
+                                
+                                <td class="text-center">
+                                    <span t-if="line['is_below_min']" class="fw-bold" style="font-size: 18px;">⚠</span>
                                 </td>
                             </tr>
                         </tbody>
