@@ -52,7 +52,7 @@
                         </thead>
                         <tbody>
                             <tr t-foreach="report_data" t-as="line" t-attf-class="{{ 'fw-bold' if line['is_below_min'] else '' }}">
-                            <t t-set="line_index" t-value="doc['data'].index(line) + 1"/>
+                            <t t-set="line_index" t-value="report_data.index(line) + 1"/>
                             <td><t t-esc="line_index"/></td>
                                 <td>
                                     <span t-esc="line['product'].name"/>
