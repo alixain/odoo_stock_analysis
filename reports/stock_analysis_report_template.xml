@@ -12,6 +12,10 @@
                             to
                             <span t-esc="end_date" t-options='{"widget": "date"}'/>
                         </div>
+                        <div class="col-6" t-if="product_name_search">
+                            <strong>Product Name Contains:</strong>
+                            <span t-esc="product_name_search"/>
+                        </div>
                         <div class="col-6" t-if="data['filter_by_tags']">
                             <t t-if="include_tags">
                                 <strong>Included Tags:</strong>
@@ -47,6 +51,8 @@
                                 <th class="text-end">In</th>
                                 <th class="text-end">Out</th>
                                 <th class="text-end">Ending Balance</th>
+                                <th class="text-end">Unit Cost</th>
+                                <th class="text-end">Total Value</th>
                                 <th>Status</th>
                             </tr>
                         </thead>
@@ -76,12 +82,27 @@
                                     <span t-esc="'%.2f'% line['end_balance']"/>
                                     <span t-esc="line['product'].uom_id.name"/>
                                 </td>
+                                <td class="text-end">
+                                    <span t-esc="line['unit_cost']" t-options='{"widget": "monetary", "display_currency": currency}'/>
+                                </td>
+                                <td class="text-end">
+                                    <span t-esc="line['total_value']" t-options='{"widget": "monetary", "display_currency": currency}'/>
+                                </td>
                                 
                                 <td class="text-center">
                                     <span t-if="line['is_below_min']" class="fw-bold" style="font-size: 18px;">⚠</span>
                                 </td>
                             </tr>
                         </tbody>
+                        <tfoot>
+                            <tr class="fw-bold">
+                                <td colspan="7" class="text-end">Grand Total Value</td>
+                                <td class="text-end">
+                                    <span t-esc="grand_total_value" t-options='{"widget": "monetary", "display_currency": currency}'/>
+                                </td>
+                                <td/>
+                            </tr>
+                        </tfoot>
                     </table>
                 </div>
             </t>

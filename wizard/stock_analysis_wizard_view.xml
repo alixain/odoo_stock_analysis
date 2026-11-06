@@ -12,6 +12,7 @@
                     </group>
                     <group>
                         <field name="filter_by_tags"/>
+                        <field name="product_name_search" placeholder="e.g. chair (partial match)"/>
                     </group>
                 </group>
                 <notebook attrs="{'invisible': [('filter_by_tags', '=', False)]}">

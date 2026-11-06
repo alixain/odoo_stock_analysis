@@ -15,6 +15,8 @@ class StockAnalysisWizard(models.TransientModel):
                                        relation='stock_analysis_exclude_tag_rel',
                                        help="Exclude products with these tags")
     filter_by_tags = fields.Boolean(string='Filter by Tags', default=False)
+    product_name_search = fields.Char(string='Search Product Name',
+                                      help="Filter products whose name contains this text (partial, case-insensitive)")
 
     @api.onchange('filter_by_tags')
     def _onchange_filter_by_tags(self):
@@ -33,6 +35,7 @@ class StockAnalysisWizard(models.TransientModel):
                 'include_tag_ids': self.include_tag_ids.ids,
                 'exclude_tag_ids': self.exclude_tag_ids.ids,
                 'filter_by_tags': self.filter_by_tags,
+                'product_name_search': (self.product_name_search or '').strip(),
             },
         }
         return self.env.ref('stock_analysis_report.action_stock_analysis_report').report_action(self, data=data)

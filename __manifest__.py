@@ -9,6 +9,8 @@
         * Incoming movements
         * Outgoing movements
         * Ending balance
+        * Unit cost and total value
+        * Search by product name (partial match)
         * Filter by date range, products and product tags
     """,
     'depends': ['base', 'stock', 'product_tags'],
