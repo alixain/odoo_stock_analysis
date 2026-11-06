@@ -51,9 +51,16 @@ class StockAnalysisReport(models.AbstractModel):
 
         return in_qty, out_qty
 
+    def _get_min_stock(self, product):
+        # x_min_low_stock_alert is an optional custom field; return 0 if it doesn't exist
+        tmpl = product.product_tmpl_id
+        if 'x_min_low_stock_alert' in tmpl._fields:
+            return tmpl.x_min_low_stock_alert or 0
+        return 0
+
     def _is_below_min_stock(self, product, end_balance):
         # Get min stock value from product template
-        min_stock = product.product_tmpl_id.x_min_low_stock_alert
+        min_stock = self._get_min_stock(product)
         # Check if min stock is defined and end balance is below or equal to it
         if min_stock and end_balance <= min_stock:
             return True
@@ -136,7 +143,7 @@ class StockAnalysisReport(models.AbstractModel):
                 'in_qty': in_qty,
                 'out_qty': out_qty,
                 'end_balance': end_balance,
-                'min_stock': product.product_tmpl_id.x_min_low_stock_alert or 0,
+                'min_stock': self._get_min_stock(product),
                 'is_below_min': is_below_min,
                 'tags': product_tags,
                 'unit_cost': unit_cost,
