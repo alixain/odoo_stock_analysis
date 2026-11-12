@@ -9,11 +9,9 @@
         * Incoming movements
         * Outgoing movements
         * Ending balance
-        * Unit cost and total value
-        * Search by product name (partial match)
         * Filter by date range, products and product tags
     """,
-    'depends': ['base', 'product', 'stock'],
+    'depends': ['base', 'stock', 'product_tags'],
     'data': [
         'security/ir.model.access.csv',
         'wizard/stock_analysis_wizard_view.xml',

@@ -51,16 +51,9 @@ class StockAnalysisReport(models.AbstractModel):
 
         return in_qty, out_qty
 
-    def _get_min_stock(self, product):
-        # x_min_low_stock_alert is an optional custom field; return 0 if it doesn't exist
-        tmpl = product.product_tmpl_id
-        if 'x_min_low_stock_alert' in tmpl._fields:
-            return tmpl.x_min_low_stock_alert or 0
-        return 0
-
     def _is_below_min_stock(self, product, end_balance):
         # Get min stock value from product template
-        min_stock = self._get_min_stock(product)
+        min_stock = product.product_tmpl_id.x_min_low_stock_alert
         # Check if min stock is defined and end balance is below or equal to it
         if min_stock and end_balance <= min_stock:
             return True
@@ -74,7 +67,6 @@ class StockAnalysisReport(models.AbstractModel):
         include_tag_ids = data['form']['include_tag_ids']
         exclude_tag_ids = data['form']['exclude_tag_ids']
         filter_by_tags = data['form']['filter_by_tags']
-        product_name_search = (data['form'].get('product_name_search') or '').strip()
 
         # Get all stockable products first
         domain = [('type', '=', 'product')]
@@ -82,10 +74,6 @@ class StockAnalysisReport(models.AbstractModel):
         # Filter by specific products if provided
         if product_ids and not filter_by_tags:
             domain.append(('id', 'in', product_ids))
-
-        # Filter by product name (partial, case-insensitive match)
-        if product_name_search:
-            domain.append(('name', 'ilike', product_name_search))
         
         products = self.env['product.product'].search(domain)
         
@@ -115,7 +103,6 @@ class StockAnalysisReport(models.AbstractModel):
             products = filtered_products
         
         report_data = []
-        grand_total_value = 0.0
         for product in products:
             # Get starting balance
             start_balance = self._get_starting_balance(product, start_date)
@@ -131,11 +118,6 @@ class StockAnalysisReport(models.AbstractModel):
             
             # Get product tags for display
             product_tags = product.product_tmpl_id.product_tag_ids
-
-            # Unit cost and total value of the ending balance
-            unit_cost = product.standard_price
-            total_value = end_balance * unit_cost
-            grand_total_value += total_value
             
             report_data.append({
                 'product': product,
@@ -143,11 +125,9 @@ class StockAnalysisReport(models.AbstractModel):
                 'in_qty': in_qty,
                 'out_qty': out_qty,
                 'end_balance': end_balance,
-                'min_stock': self._get_min_stock(product),
+                'min_stock': product.product_tmpl_id.x_min_low_stock_alert or 0,
                 'is_below_min': is_below_min,
                 'tags': product_tags,
-                'unit_cost': unit_cost,
-                'total_value': total_value,
             })
 
         # Get tag records for report header
@@ -163,7 +143,4 @@ class StockAnalysisReport(models.AbstractModel):
             'end_date': end_date,
             'include_tags': include_tags,
             'exclude_tags': exclude_tags,
-            'product_name_search': product_name_search,
-            'grand_total_value': grand_total_value,
-            'currency': self.env.company.currency_id,
         }
